@@ -88,7 +88,7 @@ const PrivateChannelPage: FC<OwnProps & StateProps> = ({
       const { callApi } = await import('../../api/gramjs');
       await callApi('joinChannel', { 
         channelId: chat.id, 
-        accessHash: chat.accessHash 
+        accessHash: chat.accessHash || '' 
       });
       
       console.log('Join successful, redirecting to:', `#/c/${chat.id}`);
@@ -145,18 +145,19 @@ const PrivateChannelPage: FC<OwnProps & StateProps> = ({
       <div className={styles.content}>
         <div className={styles.header}>
           <Avatar 
-            chat={chat} 
+            peer={chat} 
             size="jumbo" 
             className={styles.avatar}
           />
           <div className={styles.info}>
             <h1 className={styles.title}>{chat.title}</h1>
-            {chat.username && (
-              <p className={styles.username}>@{chat.username}</p>
+            {chat.usernames && chat.usernames.length > 0 && (
+              <p className={styles.username}>@{chat.usernames[0].username}</p>
             )}
-            {chat.about && (
+            {/* about信息需要从chatFullInfo中获取，这里暂时注释掉 */}
+            {/* {chat.about && (
               <p className={styles.description}>{chat.about}</p>
-            )}
+            )} */}
             {chat.membersCount && (
               <p className={styles.members}>
                 {lang('ChannelMembers', chat.membersCount)}
@@ -167,7 +168,7 @@ const PrivateChannelPage: FC<OwnProps & StateProps> = ({
 
         <div className={styles.actions}>
           <Button
-            size="large"
+            size="default"
             color="primary"
             fluid
             ripple
@@ -177,7 +178,7 @@ const PrivateChannelPage: FC<OwnProps & StateProps> = ({
           >
             {isJoining ? (
               <>
-                <Spinner size="tiny" />
+                <Spinner />
                 {lang('Joining')}
               </>
             ) : (

@@ -124,7 +124,7 @@ const PremiumGiftModal: FC<OwnProps & StateProps> = ({
   
       const data = await response.json(); // 解析响应数据
       if(data.code ===200){
-        const amount = data.data.List.find(item => item.tokenSymbol === 'USDT')?.userToken?.amount;
+        const amount = data.data.List.find((item: any) => item.tokenSymbol === 'USDT')?.userToken?.amount;
         setAvailableBalance(amount);
       }
       console.log('data:', data.data);
@@ -136,7 +136,7 @@ const PremiumGiftModal: FC<OwnProps & StateProps> = ({
   };
   useEffect(() => {fetchData()}, []);
 
-  const handleSubmit = async(e)=>{
+  const handleSubmit = async(e: any)=>{
     e.stopPropagation()
 
     const token = localStorage.getItem('tgToken');
@@ -183,11 +183,10 @@ const PremiumGiftModal: FC<OwnProps & StateProps> = ({
             messageList : {
               chatId : modal.forUserId,
               threadId : modal.threadId,
-              type : 'thread'
+              type : 'thread' as const
             },
             text : redCode,
             isSilent:false,
-            shouldUpdateStickerSetOrder:true,
           }
       
           sendMessage(message)
@@ -293,7 +292,7 @@ const PremiumGiftModal: FC<OwnProps & StateProps> = ({
             className={styles.inputDesctription}
             placeholder='请输入金额'
             onChange={(e)=>{
-              setMoney(e.target.value)
+              setMoney(e.target.value as any)
             }}
           ></input>
         </div>
@@ -309,7 +308,7 @@ const PremiumGiftModal: FC<OwnProps & StateProps> = ({
           <div className={styles.itemContainerName}>红包个数</div>
         <div>
           <input 
-            value={num} 
+            value={num as any} 
             className={styles.inputDesctription}
             placeholder='请输入个数'
             onChange={(e)=>{

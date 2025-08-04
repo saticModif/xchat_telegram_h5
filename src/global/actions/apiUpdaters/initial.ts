@@ -61,7 +61,7 @@ addActionHandler('apiUpdate', (global, actions, update): ActionReturnType => {
     case 'updateCurrentUser':
       
       
-      const obj = {
+      const obj: any = {
         id : update?.currentUser?.id,
         firstName:update?.currentUser?.firstName,
         lastName:update?.currentUser?.lastName,

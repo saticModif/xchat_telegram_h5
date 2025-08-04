@@ -38,10 +38,10 @@ export default function RenderLuckMoney({
   const origin = message.content.text?.text
  
   const originArr = origin?.split('💜')
-  const xieyi = originArr[2]
-  const title = originArr[3]
-  const name = originArr[4]
-  const code = originArr[5]
+  const xieyi = originArr?.[2]
+  const title = originArr?.[3]
+  const name = originArr?.[4]
+  const code = originArr?.[5]
 
   const getStatus = async ()=>{
     const params = {

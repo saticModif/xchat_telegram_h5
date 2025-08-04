@@ -3653,3 +3653,6 @@ export type TabArgs<T> = T extends RequiredGlobalState ? [
 ] : [
   tabId?: number | undefined,
 ];
+
+// Re-export commonly used types
+export type { ApiChat };

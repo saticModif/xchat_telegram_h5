@@ -471,11 +471,11 @@ function LeftColumn({
   
   useEffect(()=>{
  
-    window.openSettings = ()=>{
+    (window as any).openSettings = ()=>{
       console.log('dsakjdniasndisani')
       setContent(LeftColumnContent.Settings)
     }
-    window.openTgHelpCenter = ()=>{
+    (window as any).openTgHelpCenter = ()=>{
       setContent(LeftColumnContent.NewGroupStep1)
     }
   })

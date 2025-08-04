@@ -6,6 +6,7 @@ import {
 } from '../config';
 
 const DC_IDS = [1, 2, 3, 4, 5];
+const TELEGRAM_ID_CACHE_KEY = 'telegram_id_cache';
 
 
 
