@@ -1,0 +1,211 @@
+name: 性能监控
+
+on:
+  schedule:
+    # 每周一早上8点运行
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: '测试环境'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+        - development
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  performance-audit:
+    name: 性能审计
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 构建项目
+        run: |
+          if [ "${{ github.event.inputs.environment }}" = "production" ]; then
+            npm run build:production
+          elif [ "${{ github.event.inputs.environment }}" = "staging" ]; then
+            npm run build:staging
+          else
+            npm run build:dev
+          fi
+
+      - name: 安装 Lighthouse CI
+        run: npm install -g @lhci/cli@0.12.x
+
+      - name: 启动本地服务器
+        run: |
+          npm install -g serve
+          serve -s dist -l 3000 &
+          sleep 15
+
+      - name: 运行 Lighthouse 性能测试
+        run: |
+          lhci autorun --config=./lighthouserc.json
+
+      - name: 分析包大小趋势
+        run: |
+          echo "## 包大小分析" >> performance-report.md
+          echo "生成时间: $(date)" >> performance-report.md
+          echo "" >> performance-report.md
+          
+          echo "### JavaScript 文件大小" >> performance-report.md
+          find dist -name "*.js" -exec du -sh {} \; | sort -hr >> performance-report.md
+          echo "" >> performance-report.md
+          
+          echo "### CSS 文件大小" >> performance-report.md
+          find dist -name "*.css" -exec du -sh {} \; | sort -hr >> performance-report.md
+          echo "" >> performance-report.md
+          
+          echo "### 总构建产物大小" >> performance-report.md
+          du -sh dist >> performance-report.md
+
+      - name: 检查关键性能指标
+        run: |
+          echo "## 关键性能指标检查" >> performance-report.md
+          echo "" >> performance-report.md
+          
+          # 检查是否有过大的文件
+          LARGE_FILES=$(find dist -type f -size +1M | wc -l)
+          echo "超过1MB的文件数量: $LARGE_FILES" >> performance-report.md
+          
+          # 检查JavaScript文件数量
+          JS_FILES=$(find dist -name "*.js" | wc -l)
+          echo "JavaScript文件数量: $JS_FILES" >> performance-report.md
+          
+          # 检查CSS文件数量
+          CSS_FILES=$(find dist -name "*.css" | wc -l)
+          echo "CSS文件数量: $CSS_FILES" >> performance-report.md
+
+      - name: 上传性能报告
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-reports-${{ github.run_number }}
+          path: |
+            .lighthouseci/
+            performance-report.md
+
+      - name: 创建性能报告 Issue
+        if: github.event_name == 'schedule'
+        run: |
+          if [ -f "performance-report.md" ]; then
+            gh issue create \
+              --title "性能监控报告 - $(date +%Y-%m-%d)" \
+              --body-file performance-report.md \
+              --label "performance,monitoring"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bundle-size-tracking:
+    name: 包大小跟踪
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 生产构建
+        run: npm run build:production
+
+      - name: 计算包大小指标
+        run: |
+          echo "计算包大小指标..."
+          
+          # 计算总JavaScript大小
+          TOTAL_JS_SIZE=$(find dist -name "*.js" -exec du -cb {} + | tail -1 | cut -f1)
+          echo "总JavaScript大小: ${TOTAL_JS_SIZE} bytes" >> bundle-size-report.md
+          
+          # 计算总CSS大小
+          TOTAL_CSS_SIZE=$(find dist -name "*.css" -exec du -cb {} + | tail -1 | cut -f1)
+          echo "总CSS大小: ${TOTAL_CSS_SIZE} bytes" >> bundle-size-report.md
+          
+          # 计算总大小
+          TOTAL_SIZE=$(du -cb dist | tail -1 | cut -f1)
+          echo "总构建产物大小: ${TOTAL_SIZE} bytes" >> bundle-size-report.md
+          
+          # 计算文件数量
+          TOTAL_FILES=$(find dist -type f | wc -l)
+          echo "总文件数量: ${TOTAL_FILES}" >> bundle-size-report.md
+          
+          # 生成时间戳
+          echo "生成时间: $(date)" >> bundle-size-report.md
+
+      - name: 上传包大小报告
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-size-reports-${{ github.run_number }}
+          path: bundle-size-report.md
+
+  dependency-analysis:
+    name: 依赖分析
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 分析依赖
+        run: |
+          echo "## 依赖分析报告" > dependency-report.md
+          echo "生成时间: $(date)" >> dependency-report.md
+          echo "" >> dependency-report.md
+          
+          echo "### 生产依赖" >> dependency-report.md
+          npm list --prod --depth=0 >> dependency-report.md
+          echo "" >> dependency-report.md
+          
+          echo "### 开发依赖" >> dependency-report.md
+          npm list --dev --depth=0 >> dependency-report.md
+          echo "" >> dependency-report.md
+          
+          echo "### 安全审计" >> dependency-report.md
+          npm audit --json >> dependency-report.md || true
+
+      - name: 检查过时的依赖
+        run: |
+          echo "### 过时的依赖" >> dependency-report.md
+          npm outdated >> dependency-report.md || true
+
+      - name: 上传依赖分析报告
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-reports-${{ github.run_number }}
+          path: dependency-report.md 

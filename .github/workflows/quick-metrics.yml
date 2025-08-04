@@ -1,0 +1,100 @@
+name: 快速指标检查
+
+on:
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  quick-check:
+    name: 快速检查
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: TypeScript 类型检查
+        run: npx tsc --noEmit
+
+      - name: ESLint 检查
+        run: npm run check
+
+      - name: 单元测试
+        run: npm test
+        env:
+          CI: true
+
+      - name: 构建测试
+        run: npm run build:dev
+        env:
+          CI: true
+
+      - name: 安全审计
+        run: npm audit --audit-level=high
+
+      - name: 检查构建产物大小
+        run: |
+          if [ -d "dist" ]; then
+            echo "构建产物大小:"
+            du -sh dist
+            echo "主要文件大小:"
+            find dist -name "*.js" -o -name "*.css" | xargs du -sh | sort -hr | head -10
+          fi
+
+      - name: 检查依赖数量
+        run: |
+          echo "生产依赖数量: $(npm list --prod --depth=0 | wc -l)"
+          echo "开发依赖数量: $(npm list --dev --depth=0 | wc -l)"
+          echo "总依赖数量: $(npm list --depth=0 | wc -l)"
+
+  bundle-analysis:
+    name: 包大小分析
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 生产构建
+        run: npm run build:production
+
+      - name: 分析包大小
+        run: |
+          echo "分析 JavaScript 包大小..."
+          find dist -name "*.js" -exec du -sh {} \; | sort -hr
+          echo ""
+          echo "分析 CSS 包大小..."
+          find dist -name "*.css" -exec du -sh {} \; | sort -hr
+          echo ""
+          echo "总构建产物大小:"
+          du -sh dist
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-analysis
+          path: dist/ 
