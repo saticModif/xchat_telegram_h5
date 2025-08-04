@@ -1,0 +1,405 @@
+@use '../../../styles/mixins';
+
+.root {
+  z-index: calc(var(--z-modal-low-priority) + 1);
+}
+
+.root :global(.modal-content) {
+  width: 90%;
+  padding: 0;
+  background-color: var(--color-background);
+}
+
+.root :global(.modal-dialog),
+.transition,
+.content {
+  height: min(92vh, 45rem);
+  max-height: none !important;
+}
+
+.root :global(.modal-dialog),
+.root :global(.modal-content),
+.transition {
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  margin:3rem 1rem 0;
+
+}
+
+.main {
+  overflow-y: scroll;
+  height: 100%;
+  padding-bottom: 1rem;
+  padding-inline: 1rem;
+
+  @include mixins.adapt-padding-to-scrollbar(1rem);
+}
+
+.giftSection {
+  padding: 1.5rem;
+}
+
+.section {
+  padding: 0.5rem;
+}
+
+.starGiftsContainer,
+.premiumGiftsGallery {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
+}
+
+.starGiftsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0rem;
+  padding: 0.125rem;
+  padding-top: 0.75rem;
+}
+
+.header {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  border-bottom: 0.0625rem solid var(--color-borders);
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  height: 3.5rem;
+  padding: 0.5rem;
+  background: var(--color-background);
+  transition: 0.25s ease-out transform;
+  overflow: hidden;
+}
+
+.headerSlide {
+  display: flex;
+  align-items: center;
+}
+
+.headerText {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+.hiddenHeader {
+  transform: translateY(-100%);
+}
+
+.commonHeaderText {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0 0 0 3rem;
+  unicode-bidi: plaintext;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0.375rem;
+  left: 0.375rem;
+  z-index: 3;
+}
+
+.balance {
+  position: absolute;
+  top: 0.75rem;
+  right: 1.25rem;
+  z-index: 3;
+}
+
+.avatars {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  z-index: 1;
+}
+
+.logoBackground {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 7rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.description {
+  text-align: center;
+  line-height: 1.375;
+  margin: 0.25rem 1rem 1rem;
+  max-width: 25rem;
+}
+
+.starGiftsDescription {
+  margin-bottom: 0.625rem;
+}
+
+.boostIcon {
+  color: var(--color-primary);
+  vertical-align: middle;
+  line-height: 1.5;
+}
+
+.optionBottom {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.secondaryInfo {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  padding: 0.5rem 1rem;
+}
+
+.footer {
+  margin: 0 1.5rem 1rem;
+}
+
+.starGiftsTransition {
+  overflow: hidden;
+  min-height: calc(100% - 3.5rem);
+  height: auto;
+}
+
+.title{
+  position: absolute;
+  left: 50%;
+  top:0.375rem;
+  transform: translateX(-50%);
+  z-index: 3;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  font-weight: 600;
+}
+
+.itemContainer{
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  border-radius: 0.4rem;
+  justify-content: space-between;
+  align-items: center;
+  padding:0px 0.5rem;
+  height: 3rem;
+  margin-top: 1rem;
+  background-color: rgba($color: #000000, $alpha: 0.05) ;
+}
+
+.itemContainerName{
+  width: 30%;
+  font-size: 0.875rem;
+}
+
+.eedEnvelopeSwitching{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.luckyRedPacket{
+  color: #666;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+}
+
+.ordinaryRedEnvelope{
+  color: #3467FE;
+  font-size: 0.875rem;
+
+}
+
+.availableBalance{
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.quantity{
+  color: #3467FE;
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+}
+
+.inputMoney{
+  border:none;
+  width: 5rem;
+  background-color: transparent;
+  text-align: right;
+
+}
+
+.inputDesctriptionContent{
+  width: 60%;
+}
+
+
+.inputDesctription{
+  width: 100%;
+  border:none;
+  flex: 1;
+  background-color: transparent;
+  text-align: right;
+}
+
+.numberPeople{
+  margin-top: 1rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.quantity{
+  color: #3467FE;
+  margin-left: 0.5rem;
+}
+
+
+.inputDesctription:focus{
+  border: none;
+  outline: none;
+}
+
+
+.inputMoney:focus{
+  border: none;
+  outline: none;
+}
+
+
+.luckMoneySubmitBtn{
+  width: calc(100% - 2rem);
+  margin: 2rem auto 0 auto;
+}
+
+
+.detailContainer{
+  display: flex;
+  width: calc(100% - 2rem);
+  
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+.detailDescription{
+  width: 100%;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.bigAmount{
+  margin-top: 1.2rem;
+  margin-bottom: 0.5rem;
+  color:#B8860B;
+  width: 100%;
+  text-align: center;
+  .amount{
+    font-size: 3rem;
+    font-weight: 400;
+  }
+}
+
+.tip{
+  font-size: 13px;
+  
+  text-align: left;
+}
+
+.tip_red{
+  color:red;
+  margin: 0 4px;
+}
+.redListItem{
+  margin-top: 0.5rem;
+  width: calc(100% - 2rem);
+  height: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.redListItem_left{
+  width:10rem;
+  height: 100%;
+  display: flex;
+  // align-items: center;
+}
+.redListItem_info{
+  height: 2rem;
+  display: inline-block;
+  margin-left: 0.4rem;
+ 
+  font-size: 12px;
+  
+}
+.redListItemImg{
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: orange;
+}
+.redListItem_right{
+  flex:1;
+  text-align: right;
+}
+.redListItem_time{
+  color:rgba(0,0,0,0.3);
+  
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupBox {
+  width: 50%;
+  background: white;
+  border-radius: 0.5rem;
+  text-align: center;
+  max-width: 300px;
+}
+
+.popupName {
+  margin-top: 2rem;
+  font-size: 0.875rem;
+}
+
+.hintBtn {
+  margin-top: 4rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 2rem;
+  background: #1890ff;
+  color: white;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+

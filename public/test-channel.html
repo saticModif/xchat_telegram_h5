@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>频道URL测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-link {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #0088cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .test-link:hover {
+            background-color: #006699;
+        }
+        .description {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram频道URL功能测试</h1>
+    
+    <div class="description">
+        <h2>功能说明</h2>
+        <p>此页面用于测试通过URL直接访问Telegram频道的功能：</p>
+        <ul>
+            <li><strong>直接URL访问：</strong>用户输入频道用户名URL时，自动获取频道信息并进入频道页面</li>
+            <li><strong>私有频道处理：</strong>如果用户未加入该频道，显示"私有频道"页面并提供"加入频道"按钮</li>
+            <li><strong>错误处理：</strong>处理频道不存在、访问被拒绝等错误情况</li>
+            <li><strong>本地开发支持：</strong>确保在本地开发环境中也能正常工作</li>
+        </ul>
+    </div>
+
+    <h2>测试链接</h2>
+    <p>点击以下链接测试不同的频道URL：</p>
+    
+    <a href="/awdawwwww" class="test-link">测试频道: /awdawwwww</a>
+    <a href="/telegram" class="test-link">测试频道: /telegram</a>
+    <a href="/nonexistent" class="test-link">测试不存在的频道: /nonexistent</a>
+    
+    <h2>预期行为</h2>
+    <ul>
+        <li>如果频道存在且用户已加入：直接跳转到频道页面</li>
+        <li>如果频道存在但用户未加入：显示私有频道页面，提供加入按钮</li>
+        <li>如果频道不存在：显示错误页面</li>
+    </ul>
+
+    <h2>开发环境</h2>
+    <p>本地开发环境：<code>https://localhost:1234/频道名</code></p>
+    <p>生产环境：<code>https://tgweb.33test.com/频道名</code></p>
+
+    <script>
+        // 添加一些交互功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.test-link');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    console.log('测试链接点击:', this.href);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

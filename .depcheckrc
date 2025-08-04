@@ -1,0 +1,34 @@
+{
+  "ignores": [
+    "@types/*",
+    "babel-*",
+    "@babel/*",
+    "eslint-*",
+    "stylelint-*",
+    "@playwright/*",
+    "jest-*",
+    "@testing-library/*",
+    "webpack-*",
+    "@webpack/*",
+    "postcss-*",
+    "autoprefixer",
+    "cross-env",
+    "concurrently",
+    "husky",
+    "lint-staged",
+    "fantasticon",
+    "@twbs/fantasticon",
+    "tsx",
+    "telegraph-node",
+    "gitlog",
+    "serve",
+    "v8-compile-cache"
+  ],
+  "specials": [
+    "bin",
+    "eslint",
+    "jest",
+    "mocha",
+    "webpack"
+  ]
+} 
